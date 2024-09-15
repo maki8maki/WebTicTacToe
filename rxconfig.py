@@ -1,5 +1,5 @@
 import reflex as rx
 
 config = rx.Config(
-    app_name="WebTicTacToe",
+    app_name="tictactoe_app",
 )

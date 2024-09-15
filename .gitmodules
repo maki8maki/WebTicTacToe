@@ -1,3 +1,3 @@
-[submodule "WebTicTacToe/tictactoe"]
-	path = WebTicTacToe/tictactoe
+[submodule "tictactoe_app/tictactoe"]
+	path = tictactoe_app/tictactoe
 	url = git@github.com:maki8maki/TicTacToe.git
