@@ -14,35 +14,50 @@ BOX_STYLE = {
     "padding": "2em",
 }
 
-STATE_COLOR = {
-    -1: "gray",  # 空き
-    0: "red",  # 先攻
-    1: "blue",  # 後攻
-}
+SIZES = ["3", "4", "5"]
+DEFAULT_SIZE = SIZES[0]
 
 
 class State(rx.State):
+    _game: TicTacToe
     colored_board: List[int]
-    size: int = 3
+    size: int = int(DEFAULT_SIZE)
     turn: int = 0
     player_turn: int = 0
-    _game: TicTacToe = SquareTicTacToe(size)
     _computer_selector: Selector = RandomSelector()
     _is_game_end: bool = False
     STATE_COLOR: Dict[int, str] = {
         -1: "gray",  # 空き
         0: "red",  # 先攻
         1: "blue",  # 後攻
+        2: "rgba(255,102,204)",
+        3: "rgba(102,204,255)",
     }
 
     def initialize(self):
+        self._game = SquareTicTacToe(self.size)
         self.coloring()
+
+    def set_size(self, size: str):
+        self.size = int(size)
+        self.initialize()
 
     def coloring(self):
         colored_board = []
         for state in self._game.board:
             colored_board.append(self.STATE_COLOR[state])
         self.colored_board = colored_board
+
+    def change_color(self, index: int, color: str):
+        self.colored_board[index] = color
+
+    def focus(self, index: int):
+        if self._game.board[index] == -1:
+            self.change_color(index, self.STATE_COLOR[self.turn % 2 + 2])
+
+    def unfocus(self, index: int):
+        if self._game.board[index] == -1:
+            self.change_color(index, self.STATE_COLOR[-1])
 
     def reset_board(self, sleep_time: float):
         self.turn = 0
@@ -67,9 +82,13 @@ class State(rx.State):
             return rx.toast.info("Draw", position="top-center", duration=5000, style={"font-size": "20px"})
         elif self._is_game_end:
             if self.turn % 2 == self.player_turn:
-                return rx.toast.success("You win!!", position="top-center", duration=5000, style={"font-size": "20px"})
+                return rx.toast.success(
+                    "You win!!", position="top-center", duration=5000, style={"font-size": "20px"}, close_button=True
+                )
             else:
-                return rx.toast.error("You lose...", position="top-center", duration=5000, style={"font-size": "20px"})
+                return rx.toast.error(
+                    "You lose...", position="top-center", duration=5000, style={"font-size": "20px"}, close_button=True
+                )
         else:
             self.turn += 1
 
@@ -96,6 +115,28 @@ def render_box(color, index: int):
         height="50px",
         border=THEME_BORDER,
         on_click=State.select_cell(index),
+        on_mouse_enter=State.focus(index),
+        on_mouse_leave=State.unfocus(index),
+    )
+
+
+def setting():
+    return rx.hstack(
+        rx.vstack(
+            rx.text("Board Size"),
+            rx.select(
+                SIZES,
+                default_value=DEFAULT_SIZE,
+                on_change=lambda value: State.set_size(value),
+                width="100%",
+                position="popper",
+            ),
+            align="center",
+            spacing="0",
+        ),
+        rx.button("Change Turn", on_click=State.change_turn),
+        rx.button("Reset", on_click=State.reset_board(0.5)),
+        align="end",
     )
 
 
@@ -123,12 +164,9 @@ def index() -> rx.Component:
         rx.vstack(
             rx.heading("Welcome to Tic Tac Toe!", size="9"),
             rx.divider(),
+            setting(),
             turn_text(),
             display_board(),
-            rx.hstack(
-                rx.button("Change Turn", on_click=State.change_turn, width="130px"),
-                rx.button("Reset", on_click=State.reset_board(0.5), width="130px"),
-            ),
             align="center",
             style=BOX_STYLE,
         ),
