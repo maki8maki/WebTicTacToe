@@ -3,7 +3,13 @@ from typing import Dict, List
 
 import reflex as rx
 
-from tictactoe_app.tictactoe import RandomSelector, Selector, SquareTicTacToe, TicTacToe
+from tictactoe_app.tictactoe import (
+    BitStrategicSelector,
+    RandomSelector,
+    Selector,
+    SquareTicTacToe,
+    TicTacToe,
+)
 
 THEME_BORDER = f"1px solid {rx.color('gray', 12)}"
 
@@ -22,8 +28,10 @@ class State(rx.State):
     _game: TicTacToe
     colored_board: List[int]
     size: int = int(DEFAULT_SIZE)
+    _num_cells: int = size**2
     turn: int = 0
     player_turn: int = 0
+    difficulty: int = 0
     _computer_selector: Selector = RandomSelector()
     _is_game_end: bool = False
     STATE_COLOR: Dict[int, str] = {
@@ -41,7 +49,8 @@ class State(rx.State):
     def set_size(self, size: str):
         self.size = int(size)
         self._game = SquareTicTacToe(self.size)
-        return self.reset_board(1.7)
+        self.reset_selector()
+        return self.reset_board(0.5)
 
     def coloring(self):
         colored_board = []
@@ -68,12 +77,23 @@ class State(rx.State):
         if self.player_turn == 1:
             return State.computer_select(sleep_time)
 
+    def reset_selector(self):
+        if self.difficulty == 0:
+            self._computer_selector = RandomSelector()
+        elif self.difficulty == 1:
+            self._computer_selector = BitStrategicSelector(self.size, self._num_cells, self._game.get_candidates())
+
     def change_turn(self):
         self.player_turn = (self.player_turn + 1) % 2
         turn = "first" if self.player_turn == 0 else "second"
         components = [rx.toast.info(f"Your turn is {turn}", position="top-center", duration=1500)]
         components.append(State.reset_board(1.7))
         return components
+
+    def change_difficulty(self):
+        self.difficulty = (self.difficulty + 1) % 2
+        self.reset_selector()
+        return self.reset_board(0.5)
 
     def apply_select(self, num: int):
         self._is_game_end = self._game.apply_select(self.turn, num)
@@ -105,7 +125,15 @@ class State(rx.State):
 
     async def computer_select(self, sleep_time: float = 1.0):
         await asyncio.sleep(sleep_time)
-        num = self._computer_selector.select(self._game.rest)
+        if isinstance(self._computer_selector, BitStrategicSelector):
+            computer_turn = (self.player_turn + 1) % 2
+            num = self._computer_selector.select(
+                self._game.rest,
+                self._game.players[computer_turn].candidates,
+                self._game.players[self.player_turn].candidates,
+            )
+        else:
+            num = self._computer_selector.select(self._game.rest)
         return self.apply_select(num)
 
 
@@ -122,22 +150,34 @@ def render_box(color, index: int):
 
 
 def setting():
-    return rx.hstack(
-        rx.vstack(
-            rx.text("Board Size"),
-            rx.select(
-                SIZES,
-                default_value=DEFAULT_SIZE,
-                on_change=lambda value: State.set_size(value),
-                width="100%",
-                position="popper",
+    return rx.vstack(
+        rx.hstack(
+            rx.vstack(
+                rx.text("Board Size"),
+                rx.select(
+                    SIZES,
+                    default_value=DEFAULT_SIZE,
+                    on_change=lambda value: State.set_size(value),
+                    width="100%",
+                    position="popper",
+                    color_scheme="green",
+                ),
+                align="center",
+                spacing="0",
             ),
-            align="center",
-            spacing="0",
+            rx.vstack(
+                rx.text(f"Difficulty: Level {State.difficulty.to_string()}"),
+                rx.button("Change Difficulty", on_click=State.change_difficulty, color_scheme="green"),
+                align="center",
+                spacing="0",
+            ),
+            align="end",
         ),
-        rx.button("Change Turn", on_click=State.change_turn),
-        rx.button("Reset", on_click=State.reset_board(0.5)),
-        align="end",
+        rx.hstack(
+            rx.button("Change Turn", on_click=State.change_turn, color_scheme="green"),
+            rx.button("Reset", on_click=State.reset_board(0.5), color_scheme="green"),
+        ),
+        align="center",
     )
 
 
