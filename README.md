@@ -28,7 +28,7 @@ The requirement is that you have installed `Python 3.9` or higher in your local 
 
 3. Install the dependencies
 
-    I recommend using a virtual environment.
+    __I recommend using a virtual environment.__
 
     ```bash
     pip install -r requirements.txt -r tictactoe_app/tictactoe/requirements.txt
@@ -43,4 +43,4 @@ The requirement is that you have installed `Python 3.9` or higher in your local 
 
 5. Access the website
 
-   Open the browser and go to `http://localhost:3000/` to see the website.
+   Open the browser and go to `http://localhost:3000` to see the website.
