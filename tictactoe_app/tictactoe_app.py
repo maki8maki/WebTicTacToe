@@ -40,7 +40,8 @@ class State(rx.State):
 
     def set_size(self, size: str):
         self.size = int(size)
-        self.initialize()
+        self._game = SquareTicTacToe(self.size)
+        return self.reset_board(1.7)
 
     def coloring(self):
         colored_board = []
