@@ -3,13 +3,12 @@ from typing import Dict, List
 
 import reflex as rx
 
-from ..style import DEFAULT_SIZE, SIZES, THEME_BORDER
+from ..style import DEFAULT_SIZE, SIZES, STATE_COLOR, THEME_BORDER
 from ..tictactoe import BitStrategicSelector, RandomSelector, Selector, SquareTicTacToe
 from .template import template
 
 
 class SquareTicTacToeState(rx.State):
-    _num_cells: int
     _game: SquareTicTacToe
     _computer_selector: Selector
     colored_board: List[int]
@@ -18,17 +17,10 @@ class SquareTicTacToeState(rx.State):
     player_turn: int = 0
     difficulty: int = 0
     _is_game_end: bool = False
-    STATE_COLOR: Dict[int, str] = {
-        -1: "gray",  # 空き
-        0: "red",  # 先攻
-        1: "blue",  # 後攻
-        2: "rgba(255,102,204)",
-        3: "rgba(102,204,255)",
-    }
+    STATE_COLOR: Dict[int, str] = STATE_COLOR
 
     # *** 初期化やリセットに関する関数 ***
     def initialize(self):
-        self._num_cells = self.size**2
         self.make_tictactoe()
         self.reset_selector()
         self.coloring()
@@ -48,7 +40,9 @@ class SquareTicTacToeState(rx.State):
         if self.difficulty == 0:
             self._computer_selector = RandomSelector()
         elif self.difficulty == 1:
-            self._computer_selector = BitStrategicSelector(self.size, self._num_cells, self._game.get_candidates())
+            self._computer_selector = BitStrategicSelector(
+                self.size, self._game.num_cells, self._game.get_candidates()
+            )
 
     # *** 便利関数 ***
     def coloring(self):
