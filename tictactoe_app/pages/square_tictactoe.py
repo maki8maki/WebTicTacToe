@@ -3,8 +3,9 @@ from typing import Dict, List
 
 import reflex as rx
 
-from ..style import BOX_STYLE, DEFAULT_SIZE, SIZES, THEME_BORDER
+from ..style import DEFAULT_SIZE, SIZES, THEME_BORDER
 from ..tictactoe import BitStrategicSelector, RandomSelector, Selector, SquareTicTacToe
+from .template import template
 
 
 class SquareTicTacToeState(rx.State):
@@ -205,24 +206,6 @@ def display_board():
 
 
 @rx.page(route="/tictactoe/2d", title="Square Tic Tac Toe", on_load=[SquareTicTacToeState.initialize()])
-def square_t3_page() -> rx.Component:
-    return rx.container(
-        rx.color_mode.button(position="top-right"),
-        rx.vstack(
-            rx.heading("Square Tic Tac Toe", size="8"),
-            rx.divider(),
-            setting(),
-            turn_text(),
-            display_board(),
-            align="center",
-            style=BOX_STYLE,
-        ),
-        rx.logo(),
-        rx.vstack(
-            rx.button("Back to Tic Tac Toe", on_click=rx.redirect("/tictactoe"), color_scheme="green"),
-            rx.button("Back to Top", on_click=rx.redirect("/"), color_scheme="green"),
-            class_name="fixed bottom-4 right-4",
-            spacing="1",
-            align="end",
-        ),
-    )
+@template(head_text="Square Tic Tac Toe")
+def square_t3_page() -> List[rx.Component]:
+    return [setting(), turn_text(), display_board()]
