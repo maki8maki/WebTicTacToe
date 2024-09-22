@@ -3,7 +3,14 @@ from typing import Dict, List
 
 import reflex as rx
 
-from ..style import DEFAULT_SIZE, SIZES, STATE_COLOR, THEME_BORDER
+from ..style import (
+    CHANGE_TURN_TOAST,
+    DEFAULT_SIZE,
+    RESULT_TOAST,
+    SIZES,
+    STATE_COLOR,
+    THEME_BORDER,
+)
 from ..tictactoe import BitStrategicSelector, RandomSelector, Selector, SquareTicTacToe
 from .template import template
 
@@ -58,26 +65,14 @@ class SquareTicTacToeState(rx.State):
     def apply_select(self, num: int):
         self._is_game_end = self._game.apply_select(self.turn, num)
         self.coloring()
-        if len(self._game.rest) == 0:
+        if not self._is_game_end and len(self._game.rest) == 0:
             self._is_game_end = True
-            return rx.toast.info("Draw", position="top-center", duration=5000, style={"font-size": "20px"})
+            return rx.toast.info("Draw", **RESULT_TOAST)
         elif self._is_game_end:
             if self.turn % 2 == self.player_turn:
-                return rx.toast.success(
-                    "You win!!",
-                    position="top-center",
-                    duration=5000,
-                    style={"font-size": "20px"},
-                    close_button=True,
-                )
+                return rx.toast.success("You win!!", **RESULT_TOAST)
             else:
-                return rx.toast.error(
-                    "You lose...",
-                    position="top-center",
-                    duration=5000,
-                    style={"font-size": "20px"},
-                    close_button=True,
-                )
+                return rx.toast.error("You lose...", **RESULT_TOAST)
         else:
             self.turn += 1
 
@@ -122,7 +117,7 @@ class SquareTicTacToeState(rx.State):
     def change_turn(self):
         self.player_turn = (self.player_turn + 1) % 2
         turn = "first" if self.player_turn == 0 else "second"
-        components = [rx.toast.info(f"Your turn is {turn}", position="top-center", duration=1500)]
+        components = [rx.toast(f"Your turn is {turn}", **CHANGE_TURN_TOAST)]
         components.append(SquareTicTacToeState.reset_board(1.7))
         return components
 
