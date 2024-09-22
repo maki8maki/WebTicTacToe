@@ -161,24 +161,21 @@ def setting():
                     on_change=lambda value: SquareTicTacToeState.change_size(value),
                     width="100%",
                     position="popper",
-                    color_scheme="green",
                 ),
                 align="center",
                 spacing="0",
             ),
             rx.vstack(
                 rx.text(f"Difficulty: Level {SquareTicTacToeState.difficulty.to_string()}"),
-                rx.button(
-                    "Change Difficulty", on_click=SquareTicTacToeState.change_difficulty(), color_scheme="green"
-                ),
+                rx.button("Change Difficulty", on_click=SquareTicTacToeState.change_difficulty()),
                 align="center",
                 spacing="0",
             ),
             align="end",
         ),
         rx.hstack(
-            rx.button("Change Turn", on_click=SquareTicTacToeState.change_turn(), color_scheme="green"),
-            rx.button("Reset", on_click=SquareTicTacToeState.reset_board(0.5), color_scheme="green"),
+            rx.button("Change Turn", on_click=SquareTicTacToeState.change_turn()),
+            rx.button("Reset", on_click=SquareTicTacToeState.reset_board(0.5)),
         ),
         align="center",
     )

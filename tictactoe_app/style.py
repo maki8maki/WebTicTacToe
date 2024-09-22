@@ -9,5 +9,10 @@ BOX_STYLE = {
     "padding": "2em",
 }
 
+APP_THEME = {
+    "radius": "large",
+    "accent_color": "green",
+}
+
 SIZES = ["3", "4", "5"]
 DEFAULT_SIZE = SIZES[0]
