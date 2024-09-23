@@ -41,3 +41,5 @@ CHANGE_TURN_TOAST = {
         "border-radius": "0.53m",
     },
 }
+
+STYLESHEETS = ["tictactoe.css"]

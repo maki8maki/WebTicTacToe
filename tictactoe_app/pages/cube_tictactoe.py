@@ -14,11 +14,17 @@ from ..style import (
 from ..tictactoe import BitStrategicSelector, CubeTicTacToe, RandomSelector, Selector
 from .template import template
 
+BOX_SIZE = 50
+SCALE = 0.3
+
 
 class CubeTicTacToeState(rx.State):
     _game: CubeTicTacToe
     _computer_selector: Selector
     colored_board: List[List[str]]
+    HEIGHT: Dict[str, str]
+    OFFSET: Dict[str, str]
+    TRANS_Y: Dict[str, str]
     size: int = int(DEFAULT_SIZE)
     turn: int = 0
     player_turn: int = 0
@@ -28,6 +34,12 @@ class CubeTicTacToeState(rx.State):
 
     # *** 初期化やリセットに関する関数 ***
     def initialize(self):
+        margin = 5
+        for key in SIZES:
+            size = int(key)
+            self.HEIGHT[key] = str(BOX_SIZE * size**2 * SCALE + margin * (size - 1)) + "px"
+            self.OFFSET[key] = str(-BOX_SIZE * size * (1 - SCALE) / 2) + "px"
+            self.TRANS_Y[key] = str(-BOX_SIZE * size * (1 - SCALE) + margin) + "px"
         self.make_tictactoe()
         self.reset_selector()
         self.coloring()
@@ -192,11 +204,26 @@ def display_square(square: List[str], layer: int):
         columns=CubeTicTacToeState.size.to_string(),
         border=THEME_BORDER,
         justify="center",
+        class_name="panel",
+        style={
+            "--num": layer,
+            "--scale": SCALE,
+            "--offset": CubeTicTacToeState.OFFSET[CubeTicTacToeState.size.to_string()],
+            "--trans-y": CubeTicTacToeState.TRANS_Y[CubeTicTacToeState.size.to_string()],
+        },
     )
 
 
 def display_board():
-    return rx.vstack(rx.foreach(CubeTicTacToeState.colored_board, lambda square, layer: display_square(square, layer)))
+    return rx.vstack(
+        rx.foreach(
+            CubeTicTacToeState.colored_board,
+            lambda square, layer: display_square(square, layer),
+        ),
+        spacing="0",
+        class_name="cube",
+        style={"--height": CubeTicTacToeState.HEIGHT[CubeTicTacToeState.size.to_string()]},
+    )
 
 
 @rx.page(route="/tictactoe/3d", title="Square Tic Tac Toe", on_load=[CubeTicTacToeState.initialize()])
