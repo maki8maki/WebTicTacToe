@@ -14,8 +14,6 @@ APP_THEME = {
     "accent_color": "green",
 }
 
-SIZES = ["3", "4", "5"]
-DEFAULT_SIZE = SIZES[0]
 STATE_COLOR = {
     -1: "gray",  # 空き
     0: "red",  # 先攻

@@ -3,19 +3,10 @@ from typing import Dict, List
 
 import reflex as rx
 
-from ..style import (
-    CHANGE_TURN_TOAST,
-    DEFAULT_SIZE,
-    RESULT_TOAST,
-    SIZES,
-    STATE_COLOR,
-    THEME_BORDER,
-)
+from ..style import CHANGE_TURN_TOAST, RESULT_TOAST, STATE_COLOR, THEME_BORDER
 from ..tictactoe import BitStrategicSelector, CubeTicTacToe, RandomSelector, Selector
+from .config import BOX_SIZE, DEFAULT_SIZE, SCALE, SIZES
 from .template import template
-
-BOX_SIZE = 50
-SCALE = 0.3
 
 
 class CubeTicTacToeState(rx.State):
@@ -146,8 +137,8 @@ def render_box(color: str, layer: int, index: int):
     num = CubeTicTacToeState.size**2 * layer + index
     return rx.box(
         bg=color,
-        width="50px",
-        height="50px",
+        width=f"{BOX_SIZE}px",
+        height=f"{BOX_SIZE}px",
         border=THEME_BORDER,
         on_click=CubeTicTacToeState.select_cell(num),
         on_mouse_enter=CubeTicTacToeState.focus_cell(num),

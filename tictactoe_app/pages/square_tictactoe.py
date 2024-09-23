@@ -3,15 +3,9 @@ from typing import Dict, List
 
 import reflex as rx
 
-from ..style import (
-    CHANGE_TURN_TOAST,
-    DEFAULT_SIZE,
-    RESULT_TOAST,
-    SIZES,
-    STATE_COLOR,
-    THEME_BORDER,
-)
+from ..style import CHANGE_TURN_TOAST, RESULT_TOAST, STATE_COLOR, THEME_BORDER
 from ..tictactoe import BitStrategicSelector, RandomSelector, Selector, SquareTicTacToe
+from .config import BOX_SIZE, DEFAULT_SIZE, SIZES
 from .template import template
 
 
@@ -173,8 +167,8 @@ def turn_text():
 def render_box(color: str, index: int):
     return rx.box(
         bg=color,
-        width="50px",
-        height="50px",
+        width=f"{BOX_SIZE}px",
+        height=f"{BOX_SIZE}px",
         border=THEME_BORDER,
         on_click=SquareTicTacToeState.select_cell(index),
         on_mouse_enter=SquareTicTacToeState.focus_cell(index),
