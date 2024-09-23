@@ -18,7 +18,7 @@ from .template import template
 class SquareTicTacToeState(rx.State):
     _game: SquareTicTacToe
     _computer_selector: Selector
-    colored_board: List[int]
+    colored_board: List[str]
     size: int = int(DEFAULT_SIZE)
     turn: int = 0
     player_turn: int = 0
@@ -127,18 +127,6 @@ class SquareTicTacToeState(rx.State):
         return self.reset_board(0.5)
 
 
-def render_box(color, index: int):
-    return rx.box(
-        bg=color,
-        width="50px",
-        height="50px",
-        border=THEME_BORDER,
-        on_click=SquareTicTacToeState.select_cell(index),
-        on_mouse_enter=SquareTicTacToeState.focus_cell(index),
-        on_mouse_leave=SquareTicTacToeState.unfocus_cell(index),
-    )
-
-
 def setting():
     return rx.vstack(
         rx.hstack(
@@ -179,6 +167,18 @@ def turn_text():
             color=SquareTicTacToeState.STATE_COLOR[(SquareTicTacToeState.player_turn + 1) % 2],
             size="6",
         ),
+    )
+
+
+def render_box(color: str, index: int):
+    return rx.box(
+        bg=color,
+        width="50px",
+        height="50px",
+        border=THEME_BORDER,
+        on_click=SquareTicTacToeState.select_cell(index),
+        on_mouse_enter=SquareTicTacToeState.focus_cell(index),
+        on_mouse_leave=SquareTicTacToeState.unfocus_cell(index),
     )
 
 

@@ -18,7 +18,7 @@ from .template import template
 class CubeTicTacToeState(rx.State):
     _game: CubeTicTacToe
     _computer_selector: Selector
-    colored_board: List[List[int]]
+    colored_board: List[List[str]]
     size: int = int(DEFAULT_SIZE)
     turn: int = 0
     player_turn: int = 0
@@ -130,7 +130,7 @@ class CubeTicTacToeState(rx.State):
         return self.reset_board(0.5)
 
 
-def render_box(color, layer, index):
+def render_box(color: str, layer: int, index: int):
     num = CubeTicTacToeState.size**2 * layer + index
     return rx.box(
         bg=color,
@@ -186,7 +186,7 @@ def turn_text():
     )
 
 
-def display_square(square, layer):
+def display_square(square: List[str], layer: int):
     return rx.grid(
         rx.foreach(square, lambda color, index: render_box(color, layer, index)),
         columns=CubeTicTacToeState.size.to_string(),
