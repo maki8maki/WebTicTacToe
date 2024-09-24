@@ -1,2 +1,1 @@
-numpy
-reflex==0.5.10
+numpy==2.1.1
