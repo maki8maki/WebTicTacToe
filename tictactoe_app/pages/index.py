@@ -10,7 +10,17 @@ from .template import template
 def t3_index() -> List[rx.Component]:
     return [
         rx.hstack(
-            rx.button("2D", on_click=rx.redirect("/tictactoe/2d")),
-            rx.button("3D", on_click=rx.redirect("/tictactoe/3d")),
+            rx.vstack(
+                rx.button("2D"),
+                rx.image(src="/2d_tictactoe.png", height="200px"),
+                on_click=rx.redirect("/tictactoe/2d"),
+                align="center",
+            ),
+            rx.vstack(
+                rx.button("3D"),
+                rx.image(src="/3d_tictactoe.png", height="200px"),
+                on_click=rx.redirect("/tictactoe/3d"),
+                align="center",
+            ),
         )
     ]
