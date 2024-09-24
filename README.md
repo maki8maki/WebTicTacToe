@@ -31,7 +31,7 @@ The requirement is that you have installed `Python 3.9` or higher in your local 
     __I recommend using a virtual environment.__
 
     ```bash
-    pip install -r requirements.txt -r tictactoe_app/tictactoe/requirements.txt
+    pip install -r requirements.txt
     ```
 
 4. Initialize and run the project
