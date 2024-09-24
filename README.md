@@ -2,11 +2,13 @@
 
 This project made by [Reflex](https://reflex.dev/).
 
+If you want to play, access [here](https://tictactoe-app.reflex.run).
+
 ## Requirements
 
 The requirement is that you have installed `Python 3.9` or higher in your local machine but I haven't done any strict testing.
 
-## How to use
+## How to use in local
 
 1. Clone this repository
 
